@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 
 import { RadialCarousel, type GalleryItem } from '@/components/ui/radial-carousel'
 
@@ -27,15 +27,41 @@ const PROJECTS: readonly Project[] = [
 
 export function ProjectPicker() {
   const router = useRouter()
-  const [notice, setNotice] = useState('가운데 프로젝트를 클릭해 오비트를 열고, 검증할 프로젝트를 선택하세요.')
+  const folderInput = useRef<HTMLInputElement>(null)
+  const [projects, setProjects] = useState<readonly Project[]>(PROJECTS)
+  const [notice, setNotice] = useState('원형으로 펼쳐진 프로젝트를 클릭해 Replay Court를 시작하세요.')
+
+  useEffect(() => {
+    folderInput.current?.setAttribute('webkitdirectory', '')
+    folderInput.current?.setAttribute('directory', '')
+  }, [])
 
   function selectProject(item: GalleryItem) {
-    const project = PROJECTS.find((candidate) => candidate.id === item.id)
+    const project = projects.find((candidate) => candidate.id === item.id)
     if (project?.ready) {
       router.push('/replay/focus-list')
       return
     }
     setNotice(`${project?.title ?? '이 프로젝트'}는 아직 Preview 연결을 기다리고 있습니다.`)
+  }
+
+  function addProject(event: ChangeEvent<HTMLInputElement>) {
+    const firstFile = event.target.files?.[0]
+    if (!firstFile) return
+
+    const folderName = firstFile.webkitRelativePath.split('/')[0] || '새 프로젝트'
+    const projectId = `local-${folderName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+    setProjects((current) => current.some((project) => project.id === projectId)
+      ? current
+      : [...current, {
+          id: projectId,
+          title: folderName,
+          detail: 'Preview 연결 대기',
+          ready: false,
+          url: cardArtwork(folderName, 'Preview pending', '#B8D7CE'),
+        }])
+    setNotice(`${folderName} 폴더를 프로젝트 목록에 추가했습니다. Preview 연결 후 검증을 시작할 수 있습니다.`)
+    event.target.value = ''
   }
 
   return <main className={styles.page}>
@@ -48,9 +74,11 @@ export function ProjectPicker() {
         <p className={styles.eyebrow}>YOUR PREFLIGHT DESK</p>
         <h1 id="project-picker-title">어떤 프로젝트를<br />검증할까요?</h1>
         <p>프로젝트를 선택하면, 준비된 미션과 3가지 조건으로 Replay Court를 시작합니다.</p>
+        <input className={styles.folderInput} multiple onChange={addProject} ref={folderInput} type="file" />
+        <button className={styles.addProject} onClick={() => folderInput.current?.click()} type="button"><span aria-hidden="true">＋</span> 프로젝트 추가하기</button>
       </div>
       <div className={styles.orbit}>
-        <RadialCarousel centerSize={380} items={[...PROJECTS]} onItemSelect={selectProject} radius={250} thumbnailSize={104} />
+        <RadialCarousel centerSize={380} items={[...projects]} onItemSelect={selectProject} radius={250} thumbnailSize={104} />
       </div>
       <div className={styles.footer}>
         <div><span className={styles.statusDot} aria-hidden="true" /> <strong>FocusList</strong><span> · 1개 프로젝트 검증 준비 완료</span></div>

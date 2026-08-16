@@ -32,7 +32,7 @@ export const RadialCarousel: React.FC<RadialCarouselProps> = ({
   centerSize = 400,
   onItemSelect,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const [isPanning, setIsPanning] = useState(false);
