@@ -93,6 +93,7 @@ docs/VALUE_AND_VIABILITY.md      사용자 가치와 사업 검증 가설
 - PC4 Release QA: integration/E2E, 데모 영상, 제출 문서와 실제 링크 검증
 
 시작 방법은 [`docs/team/START_HERE.md`](docs/team/START_HERE.md), 전체 병렬화 전략은 [`docs/ORCHESTRATION.md`](docs/ORCHESTRATION.md)를 확인하세요.
+저장소 초기 협업 원칙과 Git 규칙은 [`docs/WORKFLOW.md`](docs/WORKFLOW.md)에 그대로 보존되어 있습니다.
 
 ## 안전 범위
 
