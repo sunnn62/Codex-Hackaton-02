@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 test('completes the evidence-to-identical-replay flow without credentials', async ({
   page,
 }, testInfo) => {
-  const response = await page.goto('/')
+  const response = await page.goto('/replay/focus-list')
 
   expect(response?.ok()).toBe(true)
   await expect(page.getByTestId('fault-condition')).toHaveCount(3)
@@ -70,7 +70,7 @@ test.describe('mobile touch flow', () => {
     { page },
     testInfo,
   ) => {
-    await page.goto('/')
+    await page.goto('/replay/focus-list')
 
     expect(await page.evaluate(() => navigator.maxTouchPoints)).toBeGreaterThan(
       0,
