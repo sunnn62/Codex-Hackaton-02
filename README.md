@@ -119,5 +119,5 @@ docs/VALUE_AND_VIABILITY.md      사용자 가치와 사업 검증 가설
 ## 제출 링크
 
 - GitHub: https://github.com/sunnn62/Codex-Hackaton-02
-- Service URL: **TODO — 배포 후 실제 접속 검증한 URL만 입력**
-- Demo video: **TODO — 업로드 후 다른 PC에서 재생 검증한 URL만 입력**
+- Demo video:영상:
+https://drive.google.com/file/d/1--nfwGKler5Ck6PqGMoJW9xB6ODFWWz8/view?usp=sharing
