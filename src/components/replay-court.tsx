@@ -13,10 +13,10 @@ interface ReplayCourtProps {
 }
 
 const STAGES: readonly { readonly id: DemoStage; readonly label: string; readonly description: string }[] = [
-  { id: 'plan', label: 'CONDITIONS', description: '검증 조건 선언' },
-  { id: 'evidence', label: 'BEFORE', description: '실패 증거 확인' },
+  { id: 'plan', label: 'PLAN', description: '검증 조건 선언' },
+  { id: 'evidence', label: 'PARALLEL', description: '동일 조건 병렬 실행' },
   { id: 'patch', label: 'REVIEW', description: '수정안 승인' },
-  { id: 'replay', label: 'REPLAY', description: '동일 조건 재실행' },
+  { id: 'replay', label: 'INTEGRATE', description: '동일 조건 재실행' },
 ]
 
 function stageIndex(stage: DemoStage): number {
@@ -65,7 +65,7 @@ export function ReplayCourt({ record }: ReplayCourtProps) {
           <h1 id="court-title">같은 실패를,<br />같은 조건으로 다시 증명합니다.</h1>
           <p>명확한 UX 결함만 증거로 남기고, 사람의 승인 후 동일 조건에서 다시 실행합니다.</p>
         </div>
-        <div className={styles.readiness} aria-live="polite">
+        <div aria-label="release readiness" className={styles.readiness} aria-live="polite">
           <span>RELEASE STATUS</span>
           <strong>{isCleared ? 'CLEARED' : <>RELEASE <span>HOLD</span></>}</strong>
           <p>{isCleared ? `${afterPassed}/${totalConditions} conditions passed` : stage === 'plan' ? 'Evidence required before release' : `${beforePassed}/${totalConditions} conditions passed before patch`}</p>

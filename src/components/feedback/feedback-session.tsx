@@ -46,7 +46,7 @@ export function FeedbackSession() {
       quote: persona.quote,
       summary: '저장 상태와 다음 행동이 즉시 확인되도록 개선이 필요합니다.',
     }))
-    router.push('/replay')
+    router.push('/replay/focus-list')
   }
 
   useEffect(() => {

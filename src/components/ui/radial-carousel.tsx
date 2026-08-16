@@ -223,11 +223,13 @@ const Item: React.FC<ItemProps> = ({
   };
 
   return (
-    <motion.div
+    <motion.button
+      aria-label={`${item.title ?? '프로젝트'} 선택`}
       variants={itemVariants}
       style={{ x, y, rotate }}
       onClick={onClick}
-      className="absolute cursor-pointer"
+      className="absolute cursor-pointer border-0 bg-transparent p-0"
+      type="button"
     >
       <motion.div
         layoutId={`card-${item.id}`}
@@ -242,6 +244,6 @@ const Item: React.FC<ItemProps> = ({
           draggable={false}
         />
       </motion.div>
-    </motion.div>
+    </motion.button>
   );
 };
