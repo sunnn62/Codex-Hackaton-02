@@ -78,3 +78,4 @@
 - [ ] 영상 음성과 화면이 정상 재생됨
 - [ ] TODO, placeholder, 로컬 경로가 제출 본문에 남지 않음
 - [ ] synthetic disclaimer가 제거되지 않음
+- [ ] `npm run test:e2e`가 실제 Chromium에서 exit 0이며 다운로드 artifact와 screenshot을 확인함

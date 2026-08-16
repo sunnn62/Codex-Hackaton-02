@@ -7,9 +7,11 @@
 - 배포 URL 또는 로컬 앱을 새로고침
 - 브라우저 zoom 100%
 - 알림과 개인 정보가 보이는 탭 닫기
-- desktop 화면에서 전체 흐름 한 번 리허설
+- desktop과 390×844에서 전체 흐름을 실제 브라우저로 한 번 리허설하고 screenshot을 저장
 - 다운로드 폴더 정리
 - GitHub `integration` branch와 Build Log 탭 준비
+
+로컬 QA sandbox에서는 Chromium launch가 제한됐지만, GitHub Actions의 실제 Chromium E2E와 `docs/assets/` screenshot이 이 흐름을 검증했다. 촬영 전에는 해당 CI run과 asset 경로를 다시 확인한다.
 
 ## 0:00–0:20 — 문제와 한 줄 소개
 
@@ -80,6 +82,7 @@
 ## 영상 실패 시 fallback
 
 - 라이브 배포 실패: 검증된 로컬 빌드와 동일 SHA를 화면에 표시
+- browser sandbox 실패: 로컬 오류를 UX blocker로 표현하지 않는다. GitHub Actions artifact를 확인하고 필요하면 browser-capable machine에서 E2E를 다시 실행한다.
 - 다운로드 실패: seed JSON 내용을 저장된 artifact로 보여주되 실패를 숨기지 않음
 - GitHub 로딩 실패: Build Log의 실제 SHA와 미리 캡처한 PR screenshot 사용
 - 시간 초과: condition 설명을 10초로 줄이고 evidence → patch → replay와 orchestration 증거는 유지
@@ -93,3 +96,4 @@
 - [ ] synthetic disclaimer가 보이거나 내레이션에 포함됨
 - [ ] 다른 PC에서 영상 URL 재생 성공
 - [ ] 음성에 API key, 이메일, 알림 등 개인 정보가 없음
+- [ ] actual desktop/mobile screenshot 경로가 Build Log에 기록됨
