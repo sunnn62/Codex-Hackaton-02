@@ -36,7 +36,7 @@
 
 | PC | Branch | 소유 결과 | 현재 증거 |
 |---|---|---|---|
-| PC1 | `integration` | 계약, baseline, CI, review, merge | 로컬 HEAD `a23b71e`; push 대기 |
+| PC1 | `integration` | 계약, baseline, CI, review, merge | 품질 기준선 `a23b71e`; 제출 문서 후속 commit; push 대기 |
 | PC2 | `feat/flight-record-ui` | UI polish, responsive, accessibility screenshot | TODO — 실제 commit/PR 입력 |
 | PC3 | `feat/replay-engine` | evidence gate, replay, partial/infrastructure handling | TODO — 실제 commit/PR 입력 |
 | PC4 | `test/demo-readiness` | Integration/E2E, 영상, 제출 문서와 링크 | TODO — 실제 commit/PR 입력 |
@@ -103,8 +103,9 @@ PC1 baseline
 - `3e01cb0` — `feat: establish Replay Court product baseline`
 - `440ced5` — `docs: orchestrate four-PC Codex sprint`
 - `a23b71e` — `ci: enforce PersonaFlight quality gates`
+- `0366c29` — `docs: prepare hackathon submission artifacts`
 
-위 SHA는 아직 원격 push 전 로컬 증거입니다. push 후 `git rev-parse HEAD`, GitHub commit URL, CI run URL을 다시 기록합니다.
+위 SHA는 아직 원격 push 전 로컬 증거입니다. 최종 baseline은 push 직전의 `git rev-parse HEAD` 값을 팀 채팅과 GitHub commit URL로 기록하고, CI run URL을 추가합니다.
 
 ## 6. 제출 전 채워야 할 실제 증거
 
