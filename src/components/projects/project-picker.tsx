@@ -46,7 +46,7 @@ export function ProjectPicker() {
   function selectProject(item: GalleryItem) {
     const project = projects.find((candidate) => candidate.id === item.id)
     if (project?.ready) {
-      router.push('/replay/focus-list')
+      router.push('/replay/focus-list/personas')
       return
     }
     setNotice(`${project?.title ?? '이 프로젝트'}는 아직 Preview 연결을 기다리고 있습니다.`)

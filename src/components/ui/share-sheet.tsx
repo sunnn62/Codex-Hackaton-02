@@ -50,7 +50,7 @@ export const ShareSheet = ({ users, onShareComplete, triggerLabel = "공유하�
   };
 
   return (
-    <div className="relative flex items-center justify-center">
+    <div className="relative flex items-center justify-start">
       <motion.button
         onClick={() => status === "idle" && setStatus("open")}
         aria-label={triggerLabel}
@@ -156,10 +156,10 @@ export const ShareSheet = ({ users, onShareComplete, triggerLabel = "공유하�
       <AnimatePresence mode="popLayout" initial={false}>
         {status === "open" && (
           <motion.div
-            className="absolute w-[340px] rounded-[38px] bg-neutral-100 p-3 py-5 shadow-md transition-colors duration-300 dark:bg-neutral-900"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
+            className="absolute left-0 top-full z-30 mt-3 w-[220px] origin-top-left rounded-[22px] border border-slate-200 bg-white p-2 shadow-[0_16px_35px_rgba(10,27,51,0.14)]"
+            initial={{ opacity: 0, scale: 0.92, y: -6 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: -6 }}
             transition={springTransition}
           >
             <div className="relative flex flex-col">
@@ -171,24 +171,24 @@ export const ShareSheet = ({ users, onShareComplete, triggerLabel = "공유하�
                   onHoverEnd={() => setHoveredId(null)}
                   onClick={() => handleSelectUser(user)}
                   className={cn(
-                    "group relative z-10 flex cursor-pointer items-center gap-3 p-2",
-                    hoveredId === user.id && "px-0"
+                    "group relative z-10 flex cursor-pointer items-center gap-2 rounded-xl p-1.5",
+                    hoveredId === user.id && "px-1"
                   )}
                   animate={{
-                    x: hoveredId === user.id ? -10 : 0,
+                    x: hoveredId === user.id ? -2 : 0,
                   }}
                 >
                   {hoveredId === user.id && (
                     <motion.div
                       layoutId="hover-bg"
-                      className="absolute inset-y-0 -right-6 -left-6 -z-10 rounded-[14px] border border-neutral-200 bg-white shadow-sm dark:border-neutral-800 dark:bg-neutral-800"
+                      className="absolute inset-0 -z-10 rounded-xl bg-slate-100"
                       transition={springTransition}
                     />
                   )}
 
                   <motion.div
                     layout
-                    className="relative h-11 w-11 overflow-hidden"
+                    className="relative h-8 w-8 shrink-0 overflow-hidden"
                     animate={{
                       borderRadius: hoveredId === user.id ? "12px" : "28px",
                     }}
@@ -208,7 +208,7 @@ export const ShareSheet = ({ users, onShareComplete, triggerLabel = "공유하�
 
                   <motion.span
                     layout
-                    className="text-[17px] font-medium tracking-tight text-neutral-800 dark:text-neutral-200"
+                    className="text-[13px] font-semibold tracking-tight text-[#0a1b33]"
                   >
                     {user.name}
                   </motion.span>
