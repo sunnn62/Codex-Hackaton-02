@@ -65,7 +65,7 @@ export function PersonaPicker() {
   const router = useRouter()
 
   function choosePersona(persona: Persona) {
-    router.push(`/replay/focus-list?persona=${persona.id}`)
+    router.push(`/replay/focus-list/session?persona=${persona.id}`)
   }
 
   return <main className={styles.page}>
