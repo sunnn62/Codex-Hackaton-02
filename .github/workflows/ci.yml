@@ -41,17 +41,25 @@ jobs:
       - name: Run tests with coverage gates
         run: npm run test:coverage
 
-      - name: Run integration tests when present
-        if: ${{ hashFiles('tests/integration/**/*.test.ts', 'tests/integration/**/*.test.tsx') != '' }}
+      - name: Run integration tests
         run: npm run test:integration
-
-      - name: Install Chromium when E2E tests are present
-        if: ${{ hashFiles('tests/e2e/**/*.spec.ts', 'tests/e2e/**/*.spec.tsx') != '' }}
-        run: npx playwright install --with-deps chromium
-
-      - name: Run E2E tests when present
-        if: ${{ hashFiles('tests/e2e/**/*.spec.ts', 'tests/e2e/**/*.spec.tsx') != '' }}
-        run: npm run test:e2e
 
       - name: Build production bundle
         run: npm run build
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: npm run test:e2e:run
+
+      - name: Upload Playwright evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-evidence-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
