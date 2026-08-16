@@ -123,7 +123,7 @@ export function ReplayCourt({ record }: ReplayCourtProps) {
       </section> : null}
 
       {currentStageIndex >= stageIndex('patch') ? <section className={styles.patchPanel} aria-labelledby="patch-title">
-        <div><p className={styles.sectionLabel}>04 / CODEX PATCH</p><h2 id="patch-title">{record.patch.title}</h2><p>{record.patch.summary}</p><div className={styles.approvalNote}><span aria-hidden="true">!</span><p>코드는 자동으로 바뀌지 않습니다. 담당자가 수정안을 확인하고 승인해야 합니다.</p></div></div>
+        <div><p className={styles.sectionLabel}>04 / CODEX PATCH / HUMAN APPROVAL</p><h2 id="patch-title">{record.patch.title}</h2><p>{record.patch.summary}</p><div className={styles.approvalNote}><span aria-hidden="true">!</span><p>코드는 자동으로 바뀌지 않습니다. 담당자가 수정안을 확인하고 승인해야 합니다.</p></div></div>
         <div className={styles.diffPanel}><div><span>MINIMAL DIFF</span><span>{record.patch.id}</span></div><pre aria-label="minimal code diff">{record.patch.diff}</pre></div>
         {stage === 'patch' ? <button className={styles.primaryAction} type="button" onClick={() => setStage('replay')}><span>승인 후 동일 조건 재실행</span><span aria-hidden="true">→</span></button> : <strong className={styles.approved}>✓ HUMAN APPROVED · REPLAYED</strong>}
       </section> : null}
