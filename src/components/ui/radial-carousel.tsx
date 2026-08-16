@@ -6,7 +6,6 @@ import {
   AnimatePresence,
   type Variants,
   useMotionValue,
-  useAnimationFrame,
   useSpring,
   useTransform,
   type MotionValue,
@@ -39,6 +38,7 @@ export const RadialCarousel: React.FC<RadialCarouselProps> = ({
   const [activeIndex, setActiveIndex] = useState(0);
 
   const [isPanning, setIsPanning] = useState(false);
+  const [isInteractionPaused, setIsInteractionPaused] = useState(false);
   const [responsiveSizes, setResponsiveSizes] = useState({
     radius,
     thumbnailSize,
@@ -83,11 +83,20 @@ export const RadialCarousel: React.FC<RadialCarouselProps> = ({
     duration: 0.1,
   });
 
-  useAnimationFrame((_, delta) => {
-    if (isExpanded && !isPanning) {
-      rotation.set(rotation.get() + delta * AUTO_ROTATION_DEGREES_PER_MS);
+  useEffect(() => {
+    if (!isExpanded || isPanning || isInteractionPaused) return
+
+    let frameId = 0
+    let previousTime = performance.now()
+    const rotate = (currentTime: number) => {
+      rotation.set(rotation.get() + (currentTime - previousTime) * AUTO_ROTATION_DEGREES_PER_MS)
+      previousTime = currentTime
+      frameId = window.requestAnimationFrame(rotate)
     }
-  });
+
+    frameId = window.requestAnimationFrame(rotate)
+    return () => window.cancelAnimationFrame(frameId)
+  }, [isExpanded, isInteractionPaused, isPanning, rotation])
 
   const toggleExpand = useCallback(() => {
     setIsExpanded((prev) => !prev);
@@ -151,6 +160,10 @@ export const RadialCarousel: React.FC<RadialCarouselProps> = ({
             }`}
             onPanStart={() => setIsPanning(true)}
             onPanEnd={() => setIsPanning(false)}
+            onPointerEnter={() => setIsInteractionPaused(true)}
+            onPointerLeave={() => setIsInteractionPaused(false)}
+            onFocusCapture={() => setIsInteractionPaused(true)}
+            onBlurCapture={() => setIsInteractionPaused(false)}
             onPan={(_, info) => {
               rotation.set(rotation.get() + info.delta.x * 0.5);
             }}

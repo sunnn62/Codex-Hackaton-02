@@ -15,7 +15,7 @@ test('completes the evidence-to-identical-replay demo without credentials', asyn
     if (message.type() === 'error') consoleErrors.push(message.text())
   })
 
-  await page.goto('/')
+  await page.goto('/replay/focus-list')
   await expect(
     page.getByRole('heading', { name: '할 일을 만들고 오늘 목록에 추가한다' }),
   ).toBeVisible()
@@ -35,7 +35,7 @@ test('completes the evidence-to-identical-replay demo without credentials', asyn
 
   await page.getByRole('button', { name: 'Codex 최소 수정 검토' }).click()
   await expect(page.getByLabel('minimal code diff')).toContainText('할 일 저장')
-  await expect(page.getByText('CODEX PATCH / HUMAN APPROVAL')).toBeVisible()
+  await expect(page.getByText('04 / CODEX PATCH')).toBeVisible()
   await expect(
     page.getByRole('button', { name: '승인 후 동일 조건 재실행' }),
   ).toBeVisible()
@@ -53,7 +53,7 @@ test('completes the evidence-to-identical-replay demo without credentials', asyn
 })
 
 test('downloads a regression seed after a truthful replay verdict', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/replay/focus-list')
   await reachReplay(page)
 
   const downloadPromise = page.waitForEvent('download')
@@ -64,7 +64,7 @@ test('downloads a regression seed after a truthful replay verdict', async ({ pag
 })
 
 test('exposes keyboard focus and text status for every critical action', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/replay/focus-list')
 
   const execute = page.getByRole('button', { name: '3개 조건 병렬 실행' })
   await execute.focus()
@@ -75,7 +75,7 @@ test('exposes keyboard focus and text status for every critical action', async (
   const review = page.getByRole('button', { name: 'Codex 최소 수정 검토' })
   await review.focus()
   await review.press('Enter')
-  await expect(page.getByText('CODEX PATCH / HUMAN APPROVAL')).toBeVisible()
+  await expect(page.getByText('04 / CODEX PATCH')).toBeVisible()
 
   const approve = page.getByRole('button', { name: '승인 후 동일 조건 재실행' })
   await approve.focus()
@@ -91,7 +91,7 @@ test('exposes keyboard focus and text status for every critical action', async (
 
 test('keeps the critical flow usable at 390 by 844', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/')
+  await page.goto('/replay/focus-list')
   await reachReplay(page)
 
   await expect(page.getByText('AFTER · 3/3 PASS')).toBeVisible()
