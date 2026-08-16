@@ -36,7 +36,9 @@ export function ProjectPicker() {
   const router = useRouter()
   const folderInput = useRef<HTMLInputElement>(null)
   const [projects, setProjects] = useState<readonly Project[]>(PROJECTS)
+  const [selectedProjectId, setSelectedProjectId] = useState<string | number>(PROJECTS[0].id)
   const [notice, setNotice] = useState('원형으로 펼쳐진 프로젝트를 클릭해 Replay Court를 시작하세요.')
+  const selectedProject = projects.find((project) => project.id === selectedProjectId) ?? projects[0]
 
   useEffect(() => {
     folderInput.current?.setAttribute('webkitdirectory', '')
@@ -45,11 +47,20 @@ export function ProjectPicker() {
 
   function selectProject(item: GalleryItem) {
     const project = projects.find((candidate) => candidate.id === item.id)
+    setSelectedProjectId(item.id)
     if (project?.ready) {
-      router.push('/replay/focus-list/personas')
+      setNotice(`${project.title} 프로젝트를 선택했습니다. 아래 버튼을 눌러 페르소나를 고르세요.`)
       return
     }
     setNotice(`${project?.title ?? '이 프로젝트'}는 아직 Preview 연결을 기다리고 있습니다.`)
+  }
+
+  function continueWithProject() {
+    if (!selectedProject?.ready) {
+      setNotice(`${selectedProject?.title ?? '선택한 프로젝트'}는 아직 Preview 연결을 기다리고 있습니다.`)
+      return
+    }
+    router.push('/replay/focus-list/personas')
   }
 
   function addProject(event: ChangeEvent<HTMLInputElement>) {
@@ -88,9 +99,14 @@ export function ProjectPicker() {
       <div className={styles.copy}>
         <p className={styles.eyebrow}>YOUR PREFLIGHT DESK</p>
         <h1 id="project-picker-title">어떤 프로젝트를<br />검증할까요?</h1>
-        <p>프로젝트를 선택하면, 준비된 미션과 3가지 조건으로 Replay Court를 시작합니다.</p>
+        <p>프로젝트를 고른 뒤, 아래 선택 버튼으로 페르소나 테스트를 시작합니다.</p>
         <input className={styles.folderInput} multiple onChange={addProject} ref={folderInput} type="file" />
-        <div className={styles.addProject}><ShareSheet onShareComplete={chooseAddSource} triggerLabel="프로젝트 추가하기" users={ADD_SOURCES} /></div>
+        <div className={styles.actions}>
+          <div className={styles.addProject}><ShareSheet onShareComplete={chooseAddSource} triggerLabel="프로젝트 추가하기" users={ADD_SOURCES} /></div>
+          <button className={styles.selectProject} disabled={!selectedProject?.ready} onClick={continueWithProject} type="button">
+            {selectedProject?.ready ? `${selectedProject.title} 프로젝트 선택` : 'Preview 연결 대기'} <span aria-hidden="true">→</span>
+          </button>
+        </div>
       </div>
       <div className={styles.orbit}>
         <RadialCarousel centerSize={380} items={[...projects]} onItemSelect={selectProject} radius={250} thumbnailSize={104} />
