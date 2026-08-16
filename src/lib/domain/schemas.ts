@@ -14,6 +14,7 @@ export const createRunInputSchema = z.object({
   successCriteria: z.string().trim().min(5).max(300),
   personaCount: z.number().int().min(3).max(12),
   mode: z.enum(['demo', 'live']),
+  primaryLocale: z.string().trim().min(2).optional(),
   repositoryUrl: httpUrlSchema.optional(),
 })
 
