@@ -3,7 +3,10 @@ import {
   parseReplayCase,
   type ActionEvidence,
   type FlightRecord,
+  type Finding,
 } from '@/lib/contracts/replay'
+import { assertFindingEvidence } from '@/lib/evidence/evidence-gate'
+import { createReplayComparison } from '@/lib/replay/replay-comparison'
 
 export const demoReplayCase = parseReplayCase({
   id: 'focus-list-create-task',
@@ -99,19 +102,22 @@ function createRuns(version: 'before' | 'after') {
 export function createDemoFlightRecord(): FlightRecord {
   const before = createRuns('before')
   const after = createRuns('after')
+  const finding: Finding = {
+    id: 'finding-save-state',
+    title: '저장 동작과 완료 상태가 명확하지 않다',
+    severity: 'blocker',
+    evidenceIds: before.flatMap((run) =>
+      run.evidence.map((evidence) => evidence.id),
+    ),
+  }
+
+  assertFindingEvidence(finding, before)
 
   return parseFlightRecord({
     id: 'flight-record-focus-list',
     replayCase: demoReplayCase,
     before,
-    finding: {
-      id: 'finding-save-state',
-      title: '저장 동작과 완료 상태가 명확하지 않다',
-      severity: 'blocker',
-      evidenceIds: before.flatMap((run) =>
-        run.evidence.map((evidence) => evidence.id),
-      ),
-    },
+    finding,
     patch: {
       id: 'patch-save-state',
       title: 'CTA와 저장 상태를 명확하고 지속적으로 표시한다',
@@ -125,13 +131,11 @@ export function createDemoFlightRecord(): FlightRecord {
       status: 'proposed',
     },
     after,
-    comparison: {
-      missionId: demoReplayCase.mission.id,
-      beforePassed: 0,
-      afterPassed: 3,
-      verdict: 'improved',
-      unresolvedConditionIds: [],
-    },
+    comparison: createReplayComparison(
+      demoReplayCase.mission.id,
+      before,
+      after,
+    ),
     generatedAt: '2026-08-16T04:01:30.000Z',
   })
 }

@@ -113,11 +113,15 @@ export const replayComparisonSchema = z
   .strict()
   .readonly()
 
-function comparisonVerdict(
+export function deriveReplayVerdict(
   beforePassed: number,
   afterPassed: number,
   hasUnresolvedConditions: boolean,
+  hasInfrastructureFailure: boolean,
 ): z.infer<typeof replayComparisonSchema>['verdict'] {
+  if (hasInfrastructureFailure) {
+    return 'partial'
+  }
   if (afterPassed < beforePassed) {
     return 'regressed'
   }
@@ -211,10 +215,14 @@ export const flightRecordSchema = z
     const declaredUnresolvedConditionIds = [
       ...record.comparison.unresolvedConditionIds,
     ].sort()
-    const expectedVerdict = comparisonVerdict(
+    const hasInfrastructureFailure = [...record.before, ...record.after].some(
+      (run) => run.verdict === 'infrastructure-failure',
+    )
+    const expectedVerdict = deriveReplayVerdict(
       beforePassed,
       afterPassed,
       unresolvedConditionIds.length > 0,
+      hasInfrastructureFailure,
     )
 
     if (

@@ -36,10 +36,10 @@
 
 | PC | Branch | 소유 결과 | 현재 증거 |
 |---|---|---|---|
-| PC1 | `integration` | 계약, baseline, CI, review, merge | 품질 기준선 `a23b71e`; 제출 문서 후속 commit; push 대기 |
+| PC1 | `integration` | 계약, baseline, CI, review, merge | 원격 통합 `8f286ef`; [green CI](https://github.com/sunnn62/Codex-Hackaton-02/actions/runs/31930156060) |
 | PC2 | `feat/flight-record-ui` | UI polish, responsive, accessibility screenshot | TODO — 실제 commit/PR 입력 |
 | PC3 | `feat/replay-engine` | evidence gate, replay, partial/infrastructure handling | TODO — 실제 commit/PR 입력 |
-| PC4 | `test/demo-readiness` | Integration/E2E, 영상, 제출 문서와 링크 | TODO — 실제 commit/PR 입력 |
+| PC4 | `test/demo-readiness` | Integration/E2E, 영상, 제출 문서와 링크 | worker PR 대기; PC1 fallback QA는 `ce2ca1c`에서 검증 |
 
 각 역할은 `docs/team/PC1_INTEGRATOR_GUIDE.md`부터 `PC4_QA_GUIDE.md`까지 독립적인 설정, 명령, 프롬프트, 완료 조건을 받습니다. 공용 계약이 부족하면 worker가 임시 타입을 만들지 않고 PC1에게 변경 요청을 전달합니다.
 
@@ -63,10 +63,14 @@
    - Zod `superRefine`에서 실제 값과 일치하도록 강제
 4. fault condition tuple과 version enum이 중복 선언됨
    - 공유 schema fragment로 추출
-5. CI가 향후 Integration/E2E를 누락할 수 있었음
-   - 테스트 파일이 존재하는 즉시 자동 실행하도록 단계 추가
+5. CI가 Integration/E2E 파일 삭제 시 해당 gate를 건너뛸 수 있었음
+   - conditional gate를 제거하고 integration, Chromium, E2E를 항상 실행하도록 수정
 6. GitHub Actions tag가 이동 가능한 공급망 위험
-   - checkout/setup-node를 검증된 full commit SHA로 고정
+   - checkout/setup-node/upload-artifact를 검증된 full commit SHA로 고정
+7. Windows에서 Playwright가 Next dev worker를 종료하지 못해 테스트가 멈출 수 있었음
+   - production Next 앱을 Playwright global setup이 직접 열고 닫도록 바꿔 정상 종료와 포트 해제를 검증
+8. 390×844 검증이 viewport만 작고 실제 touch context가 아니었음
+   - `isMobile`, `hasTouch`, `tap()`을 사용하는 mobile context와 성공 screenshot evidence 추가
 
 ## 4. Integrate — 결과를 어떻게 하나로 합쳤는가
 
@@ -81,7 +85,7 @@ PC1 baseline
 → main
 ```
 
-각 PR 뒤 PC1이 전체 unit test, lint, build를 다시 실행합니다. PC4 PR 이후 Integration/E2E와 coverage를 포함합니다. 현재 worker PR은 아직 생성되지 않았으므로 병합 완료로 기록하지 않습니다.
+원격 저장소의 기존 `integration` 이력과 PC1 기준선이 서로 다른 root에서 시작한 사실을 확인했습니다. 강제 push 대신 `--allow-unrelated-histories` merge로 기존 `Agent.md`와 `docs/WORKFLOW.md`를 보존했고, merge SHA `8f286ef`를 정상 push했습니다. 현재 worker PR은 아직 생성되지 않았으므로 네 명의 결과 병합이 끝났다고 기록하지 않습니다.
 
 ## 5. 현재 검증 증거
 
@@ -92,11 +96,14 @@ PC1 baseline
 | `npm.cmd run test` | 6 files, 27 tests passed |
 | `npm.cmd run lint` | exit 0 |
 | `npm.cmd run test:coverage` | statements 96.77%, branches 90.27%, functions 100%, lines 96.52% |
+| `npm.cmd run test:integration` | 1 file, 1 test passed |
+| `npm.cmd run test:e2e` | production build 후 desktop keyboard + 390×844 mobile touch, 2 tests passed |
 | `npm.cmd run build` | Next.js production build, TypeScript, 3 static pages 성공 |
 | Browser desktop | 핵심 버튼 흐름과 3/3 Flight Record 확인 |
 | Browser 390×844 | horizontal overflow 없음, download link visible |
 | Browser console | warning/error 0 |
 | Secret scan | 실제 secret 없음; 문서의 검색 정규식 예시만 검출 |
+| GitHub Actions | [run 31930156060](https://github.com/sunnn62/Codex-Hackaton-02/actions/runs/31930156060), 모든 gate와 Playwright artifact upload 성공 |
 
 ### PC1 commit history
 
@@ -104,19 +111,21 @@ PC1 baseline
 - `440ced5` — `docs: orchestrate four-PC Codex sprint`
 - `a23b71e` — `ci: enforce PersonaFlight quality gates`
 - `0366c29` — `docs: prepare hackathon submission artifacts`
+- `ce2ca1c` — `test: prove Replay Court release flow`
+- `8f286ef` — `merge: preserve remote workflow in PersonaFlight baseline`
 
-위 SHA는 아직 원격 push 전 로컬 증거입니다. 최종 baseline은 push 직전의 `git rev-parse HEAD` 값을 팀 채팅과 GitHub commit URL로 기록하고, CI run URL을 추가합니다.
+공유 기준선은 원격 `pc1-baseline`의 `b24efb6ef2177c43e426a8346a0cdfa30ab59dff`이며, 원격 통합 기준선은 [`8f286efd8727c3404f576267b3ea05d9dfac8115`](https://github.com/sunnn62/Codex-Hackaton-02/commit/8f286efd8727c3404f576267b3ea05d9dfac8115)입니다.
 
 ## 6. 제출 전 채워야 할 실제 증거
 
-- [ ] `integration` 원격 baseline SHA와 commit URL
+- [x] `integration` 원격 baseline SHA와 commit URL
 - [ ] PC2 commit과 PR URL, desktop/mobile screenshot
 - [ ] PC3 commit과 PR URL, focused test output
 - [ ] PC4 commit과 PR URL, Integration/E2E output
 - [ ] 최종 `main` SHA와 green CI URL
 - [ ] 실제 Service URL을 다른 PC에서 열어본 결과
 - [ ] 실제 Demo video URL을 다른 PC에서 재생한 결과
-- [ ] 최종 화면 screenshot 경로
+- [x] 최종 화면 screenshot: `docs/assets/flight-record-desktop.png`, `docs/assets/flight-record-mobile.png`
 
 ## 7. Post-Deploy Monitoring & Validation
 

@@ -12,7 +12,9 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:integration": "vitest run --config vitest.integration.config.ts",
-    "test:e2e": "playwright test"
+    "pretest:e2e": "next build",
+    "test:e2e": "playwright test",
+    "test:e2e:run": "playwright test"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

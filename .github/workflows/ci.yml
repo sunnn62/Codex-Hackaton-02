@@ -11,6 +11,8 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 concurrency:
   group: personaflight-ci-${{ github.workflow }}-${{ github.ref }}
@@ -24,10 +26,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22.14.0
           cache: npm
@@ -41,17 +43,73 @@ jobs:
       - name: Run tests with coverage gates
         run: npm run test:coverage
 
-      - name: Run integration tests when present
-        if: ${{ hashFiles('tests/integration/**/*.test.ts', 'tests/integration/**/*.test.tsx') != '' }}
+      - name: Run integration tests
         run: npm run test:integration
-
-      - name: Install Chromium when E2E tests are present
-        if: ${{ hashFiles('tests/e2e/**/*.spec.ts', 'tests/e2e/**/*.spec.tsx') != '' }}
-        run: npx playwright install --with-deps chromium
-
-      - name: Run E2E tests when present
-        if: ${{ hashFiles('tests/e2e/**/*.spec.ts', 'tests/e2e/**/*.spec.tsx') != '' }}
-        run: npm run test:e2e
 
       - name: Build production bundle
         run: npm run build
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: npm run test:e2e:run
+
+      - name: Upload Playwright evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-evidence-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  build-pages:
+    name: Build GitHub Pages artifact
+    needs: verify
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/integration' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22.14.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        with:
+          enablement: true
+
+      - name: Build static site
+        run: npm run build
+        env:
+          GITHUB_PAGES: 'true'
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: ./out
+
+  deploy-pages:
+    name: Deploy GitHub Pages
+    needs: build-pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

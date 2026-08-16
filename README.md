@@ -54,14 +54,20 @@ npm.cmd run test:coverage
 npm.cmd run build
 ```
 
-현재 PC1 기준선에서 unit/component 테스트 27개, 라인 커버리지 96.52%, 프로덕션 빌드가 통과했습니다. 브라우저에서 desktop과 390×844 핵심 흐름을 직접 검증했고 가로 overflow와 console warning/error가 없었습니다.
-
-Integration/E2E 테스트가 추가되면 CI가 다음 명령도 자동 실행합니다.
+현재 PC1 기준선에서 unit/component 27개와 integration 1개, Playwright E2E 2개가 통과했습니다. 라인 커버리지는 96.52%이며 프로덕션 빌드, desktop keyboard 흐름, 390×844 touch 흐름, 가로 overflow 검증을 CI가 모두 실행합니다.
 
 ```powershell
 npm.cmd run test:integration
 npm.cmd run test:e2e
 ```
+
+## 검증 화면
+
+CI의 E2E 테스트가 동일 흐름을 실행한 뒤 데스크톱과 모바일 touch 화면을 증거로 첨부합니다.
+
+![PersonaFlight desktop Flight Record](docs/assets/flight-record-desktop.png)
+
+![PersonaFlight mobile Flight Record](docs/assets/flight-record-mobile.png)
 
 ## 구조
 
@@ -72,6 +78,8 @@ src/lib/contracts/               Zod 기반 불변 제품 계약
 src/lib/replay/                  결정론적 before/after demo record
 src/lib/runner/                  URL·행동 안전 정책
 tests/unit/                      계약·엔진·UI·안전 정책 테스트
+tests/integration/               Flight Record JSON round-trip 테스트
+tests/e2e/                       desktop keyboard·mobile touch 핵심 흐름
 docs/team/                       4-PC Codex 작업 가이드
 docs/BUILD_LOG.md                Plan/Parallel/Review/Integrate 증거
 docs/VALUE_AND_VIABILITY.md      사용자 가치와 사업 검증 가설
@@ -85,6 +93,7 @@ docs/VALUE_AND_VIABILITY.md      사용자 가치와 사업 검증 가설
 - PC4 Release QA: integration/E2E, 데모 영상, 제출 문서와 실제 링크 검증
 
 시작 방법은 [`docs/team/START_HERE.md`](docs/team/START_HERE.md), 전체 병렬화 전략은 [`docs/ORCHESTRATION.md`](docs/ORCHESTRATION.md)를 확인하세요.
+저장소 초기 협업 원칙과 Git 규칙은 [`docs/WORKFLOW.md`](docs/WORKFLOW.md)에 그대로 보존되어 있습니다.
 
 ## 안전 범위
 
