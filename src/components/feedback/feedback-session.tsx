@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import styles from './feedback-session.module.css'
 
@@ -36,8 +36,18 @@ const DEFAULT_PERSONA = PERSONAS[0]
 
 export function FeedbackSession() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const persona = PERSONAS.find((item) => item.id === searchParams.get('persona')) ?? DEFAULT_PERSONA
+
+  function finishSession() {
+    window.localStorage.setItem('personaflight:focus-list:feedback', JSON.stringify({
+      persona: persona.name,
+      quote: persona.quote,
+      summary: '저장 상태와 다음 행동이 즉시 확인되도록 개선이 필요합니다.',
+    }))
+    router.push('/replay')
+  }
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoading(false), 1800)
@@ -88,7 +98,7 @@ export function FeedbackSession() {
           <section><div><span>03</span><strong>행동의 언어</strong><code>before-reduced-inference-ambiguous-copy-evidence</code></div><h3>“Done”만으로는 저장과 닫기 중 어떤 행동인지 알기 어렵습니다.</h3><p>버튼 이름을 “할 일 저장”으로 바꾸고 결과를 바로 연결하세요.</p></section>
         </div>
 
-        <footer className={styles.nextAction}><div><span>SESSION VERDICT</span><strong>REVIEW REQUIRED</strong></div><Link href="/replay/focus-list">증거와 수정안 보기 <span aria-hidden="true">→</span></Link></footer>
+        <footer className={styles.nextAction}><div><span>SESSION VERDICT</span><strong>REVIEW REQUIRED</strong></div><button onClick={finishSession} type="button">마치기 <span aria-hidden="true">→</span></button></footer>
       </article>
     </section>
     <p className={styles.disclaimer}>Synthetic conditions are evidence, not a replacement for user research.</p>

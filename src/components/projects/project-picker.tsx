@@ -16,6 +16,12 @@ interface Project extends GalleryItem {
   readonly detail: string
 }
 
+interface SavedFeedback {
+  readonly persona: string
+  readonly quote: string
+  readonly summary: string
+}
+
 function cardArtwork(title: string, detail: string, accent: string): string {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800"><rect width="800" height="800" fill="#F7F7F6"/><circle cx="652" cy="138" r="184" fill="${accent}" opacity=".92"/><path d="M-44 628C144 462 310 564 436 718C510 808 642 804 844 686V844H-44Z" fill="#0A1B33"/><rect x="70" y="80" width="218" height="32" rx="16" fill="#0A1B33" opacity=".13"/><text x="70" y="490" fill="#0A1B33" font-size="73" font-family="Arial, sans-serif" font-weight="700">${title}</text><text x="72" y="540" fill="#526071" font-size="28" font-family="Arial, sans-serif">${detail}</text><text x="72" y="702" fill="#FFFFFF" font-size="25" font-family="Arial, sans-serif" letter-spacing="4">PERSONAFLIGHT</text></svg>`
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`
@@ -34,12 +40,31 @@ const ADD_SOURCES = [
   { id: 'preview', name: 'Preview URL 추가', icon: <FiLink aria-hidden="true" /> },
 ]
 
+function isSavedFeedback(value: unknown): value is SavedFeedback {
+  return typeof value === 'object' && value !== null
+    && typeof (value as SavedFeedback).persona === 'string'
+    && typeof (value as SavedFeedback).quote === 'string'
+    && typeof (value as SavedFeedback).summary === 'string'
+}
+
 export function ProjectPicker() {
   const router = useRouter()
   const folderInput = useRef<HTMLInputElement>(null)
   const [projects, setProjects] = useState<readonly Project[]>(PROJECTS)
   const [selectedProjectId, setSelectedProjectId] = useState<string | number | null>(null)
   const [notice, setNotice] = useState('원형으로 펼쳐진 프로젝트를 클릭해 Replay Court를 시작하세요.')
+  const [savedFeedback] = useState<SavedFeedback | null>(() => {
+    if (typeof window === 'undefined') return null
+    const storedFeedback = window.localStorage.getItem('personaflight:focus-list:feedback')
+    if (!storedFeedback) return null
+    try {
+      const parsedFeedback: unknown = JSON.parse(storedFeedback)
+      return isSavedFeedback(parsedFeedback) ? parsedFeedback : null
+    } catch {
+      window.localStorage.removeItem('personaflight:focus-list:feedback')
+      return null
+    }
+  })
   const selectedProject = projects.find((project) => project.id === selectedProjectId)
 
   useEffect(() => {
@@ -116,6 +141,9 @@ export function ProjectPicker() {
             {selectedProject.ready ? `${selectedProject.title} 프로젝트 선택` : 'Preview 연결 대기'} <span aria-hidden="true">→</span>
           </button>}
         </div>
+        {savedFeedback && <aside className={styles.feedbackMemo} aria-label="FocusList에 저장된 피드백 메모">
+          <span>FOCUSLIST / FEEDBACK NOTE</span><strong>{savedFeedback.persona}의 피드백</strong><p>{savedFeedback.summary}</p>
+        </aside>}
       </div>
       <div className={styles.orbit}>
         <RadialCarousel centerSize={380} items={[...projects]} onItemSelect={selectProject} radius={150} thumbnailSize={145} />
