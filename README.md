@@ -36,9 +36,18 @@ Mission Contract
 
 Node.js 22.14 이상을 권장합니다.
 
-```powershell
+macOS, Linux, Windows PowerShell에서 공통으로 다음 순서로 실행합니다.
+
+```bash
 git clone https://github.com/sunnn62/Codex-Hackaton-02.git
-Set-Location Codex-Hackaton-02
+cd Codex-Hackaton-02
+npm ci
+npm run dev
+```
+
+Windows에서 실행 파일 확장자가 필요한 경우에만 `npm.cmd`를 사용합니다.
+
+```powershell
 npm.cmd ci
 npm.cmd run dev
 ```
@@ -54,7 +63,7 @@ npm.cmd run test:coverage
 npm.cmd run build
 ```
 
-현재 PC1 기준선에서 unit/component 27개와 integration 1개, Playwright E2E 2개가 통과했습니다. 라인 커버리지는 96.52%이며 프로덕션 빌드, desktop keyboard 흐름, 390×844 touch 흐름, 가로 overflow 검증을 CI가 모두 실행합니다.
+현재 integration CI에서 unit/component 27개, integration 1개, Playwright E2E 2개, production build가 통과했습니다. 라인 커버리지는 96.52%이며 desktop keyboard 흐름, 390×844 touch 흐름, 가로 overflow 검증과 실제 화면 artifact가 CI에 남아 있습니다. PC4의 로컬 browser sandbox에서는 Chromium launch가 차단됐으나, 이는 CI의 제품 검증과 분리된 실행 환경 제약입니다.
 
 ```powershell
 npm.cmd run test:integration

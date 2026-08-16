@@ -30,18 +30,18 @@
 - `docs/ORCHESTRATION.md`
 - `AGENTS.md`
 
-## 2. Parallel — 네 명의 작업을 어떻게 병렬화했는가
+## 2. Parallel — 확인 가능한 범위만 기록
 
-모든 PC는 PC1이 push한 동일 baseline SHA에서 시작하고 서로 다른 파일을 소유합니다.
+PC4는 원격 `origin/pc1-baseline`과 같은 SHA에서 시작한 `test/demo-readiness`를 확인했다.
 
 | PC | Branch | 소유 결과 | 현재 증거 |
 |---|---|---|---|
 | PC1 | `integration` | 계약, baseline, CI, review, merge | 원격 통합 `8f286ef`; [green CI](https://github.com/sunnn62/Codex-Hackaton-02/actions/runs/31930156060) |
 | PC2 | `feat/flight-record-ui` | UI polish, responsive, accessibility screenshot | TODO — 실제 commit/PR 입력 |
 | PC3 | `feat/replay-engine` | evidence gate, replay, partial/infrastructure handling | TODO — 실제 commit/PR 입력 |
-| PC4 | `test/demo-readiness` | Integration/E2E, 영상, 제출 문서와 링크 | worker PR 대기; PC1 fallback QA는 `ce2ca1c`에서 검증 |
+| PC4 | `test/demo-readiness` | Integration/E2E, 영상, 제출 문서와 링크 | [PR #2](https://github.com/sunnn62/Codex-Hackaton-02/pull/2); baseline `b24efb6` |
 
-각 역할은 `docs/team/PC1_INTEGRATOR_GUIDE.md`부터 `PC4_QA_GUIDE.md`까지 독립적인 설정, 명령, 프롬프트, 완료 조건을 받습니다. 공용 계약이 부족하면 worker가 임시 타입을 만들지 않고 PC1에게 변경 요청을 전달합니다.
+PC2·PC3의 별도 worktree 시작 SHA와 PR은 이 QA 실행에서 확인하지 않았다. 따라서 이 문서는 네 역할이 실제로 병렬 실행되었다고 꾸며내지 않는다. 역할 분리와 예정 병합 순서는 계획 문서에만 남아 있다.
 
 ## 3. Review — 결과를 어떻게 검토하고 고쳤는가
 
@@ -89,7 +89,7 @@ PC1 baseline
 
 ## 5. 현재 검증 증거
 
-2026-08-16 PC1 로컬 기준:
+2026-08-16 PC4 로컬 실행 결과:
 
 | 명령/검증 | 결과 |
 |---|---|
@@ -104,6 +104,7 @@ PC1 baseline
 | Browser console | warning/error 0 |
 | Secret scan | 실제 secret 없음; 문서의 검색 정규식 예시만 검출 |
 | GitHub Actions | [run 31930156060](https://github.com/sunnn62/Codex-Hackaton-02/actions/runs/31930156060), 모든 gate와 Playwright artifact upload 성공 |
+| PC4 local browser | Chromium launch는 macOS sandbox 권한 오류로 실패했으나, 이는 CI run과 분리된 환경 제약이며 UX finding으로 분류하지 않음 |
 
 ### PC1 commit history
 
@@ -121,7 +122,8 @@ PC1 baseline
 - [x] `integration` 원격 baseline SHA와 commit URL
 - [ ] PC2 commit과 PR URL, desktop/mobile screenshot
 - [ ] PC3 commit과 PR URL, focused test output
-- [ ] PC4 commit과 PR URL, Integration/E2E output
+- [x] PC4 commit과 [PR #2](https://github.com/sunnn62/Codex-Hackaton-02/pull/2)
+- [x] PC4 integration/E2E test definitions; browser-capable CI evidence는 위 GitHub Actions run 참조
 - [ ] 최종 `main` SHA와 green CI URL
 - [ ] 실제 Service URL을 다른 PC에서 열어본 결과
 - [ ] 실제 Demo video URL을 다른 PC에서 재생한 결과
