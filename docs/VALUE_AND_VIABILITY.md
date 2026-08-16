@@ -90,8 +90,15 @@ persona 생성 → 화면에 대한 의견 → 점수와 개선 제안
 - exact three condition과 identical-condition invariant
 - partial verdict가 full success로 표시되지 않음
 - 다운로드 가능한 regression seed
-- desktop/mobile 반응형 UI
-- CI unit/coverage/lint/build gate
+- unit 27개와 integration 30개로 위 계약을 검증
+- lint와 production build
+- CI Chromium E2E의 desktop keyboard·390×844 touch flow, console 상태, screenshot artifact
+
+### 아직 검증되지 않은 것
+
+- 실제 사용자에게 가치가 있는지, 어떤 가격을 수용하는지, 시장 크기
+
+PC4의 로컬 QA sandbox에서는 Chromium launch가 macOS 권한으로 차단됐지만, GitHub Actions의 browser-capable runner가 해당 E2E와 screenshot artifact를 검증했다. 이 환경 제약은 UX finding으로 전환하지 않는다.
 
 ### 다음 단계
 

@@ -1,0 +1,44 @@
+{
+  "schema": "personaflight.session-log/v1",
+  "date": "2026-08-16",
+  "language": "ko",
+  "scope": "Sanitized user-visible conversation and decision log. Platform instructions, credentials, device codes, tokens, approval internals, and raw tool output are excluded.",
+  "project": {
+    "name": "PersonaFlight Replay Court",
+    "repository": "https://github.com/sunnn62/Codex-Hackaton-02",
+    "target_user": "출시 전 QA와 실제 사용자 모집이 어려운 1인 바이브코더",
+    "final_direction": "출시 전 synthetic UX replay와 동일 조건 회귀 검증"
+  },
+  "conversation": [
+    {"role":"user","content":"생성형 AI의 창의력·문해력·편향·환각·악용·보안·비판적 사고 외주화 문제를 묶고, 해커톤에서 발전 가능성이 높은 아이디어를 수치 평가해 달라고 요청했다."},
+    {"role":"assistant","content":"유사 문제를 묶고 문제 차별성, 작동 제품, Codex orchestration, 사용자 가치와 팀 통합을 중심 평가 축으로 정리했다."},
+    {"role":"user","content":"1인 바이브코더를 위한 범용 출시 전 앱 베타테스팅 아이디어를 구체화하고, 연령·성별·환경 등 다양한 AI 페르소나 데이터를 특징으로 쓰자고 결정했다."},
+    {"role":"assistant","content":"실제 사용자를 대체하지 않는 AI preflight와 동일 조건 before/after 검증을 핵심으로 PersonaFlight를 구체화했다."},
+    {"role":"user","content":"AI 회로 설계의 회로 오류, 제조 수율, 다목적 최적화 아이디어도 평가한 뒤 회로 설계 방향을 잠시 선택했다."},
+    {"role":"assistant","content":"SPICE 기반 생성→시뮬레이션→분석→수정 루프의 장점과 구현 리스크를 평가했다."},
+    {"role":"user","content":"PersonaFlight 제품 설계서와 퍼스널 브랜딩 아이디어를 비교하고, 4시간 구현 가능성·문제 정의·25개 팀 차별성을 고려해 결론을 요청했다."},
+    {"role":"assistant","content":"작동 가능한 evidence-to-replay 데모와 심사 기준 적합성이 더 높은 PersonaFlight를 선택했다."},
+    {"role":"user","content":"GitHub 공유 저장소와 네 대 PC를 이용해 4시간 안에 웹으로 개발하도록 역할과 Codex orchestration을 요청했다."},
+    {"role":"assistant","content":"PC1 Integrator, PC2 Product UI, PC3 Replay Engine, PC4 Release QA로 분리하고 공통 baseline SHA, 브랜치, 파일 소유권, 테스트, 반환 형식을 문서화했다."},
+    {"role":"user","content":"GitHub 인증·safe.directory·git-remote-https 오류를 해결하고 각 PC가 baseline SHA에서 시작할 수 있도록 안내를 요청했다."},
+    {"role":"assistant","content":"GitHub CLI 인증, 저장소 안전 경로 설정, 브랜치 생성, push/PR, 구조화된 완료 보고 절차를 제공했다."},
+    {"role":"user","content":"PC3가 evidence gate, replay 조건 검증, infrastructure failure 정책을 수정해 PR #1을 제출했다고 보고했다."},
+    {"role":"assistant","content":"빈/unknown evidence, condition set, mission 불변식과 partial verdict를 검토한 뒤 PR #1을 통합했다."},
+    {"role":"user","content":"남은 한 시간 안에 서비스, PPT, 시연영상, README까지 완료해야 하므로 우승 가능성과 시간 제한을 동시에 고려해 달라고 요청했다."},
+    {"role":"assistant","content":"구현 증거를 최우선으로 하고 검증된 UI, 35초 영상, 증거 수치, Codex 협업 로그를 제출 패키지 축으로 확정했다."},
+    {"role":"user","content":"PC4가 QA 문서, integration/E2E 테스트를 제출했으며 macOS sandbox에서는 Chromium이 뜨지 않았다고 보고했다."},
+    {"role":"assistant","content":"Windows와 Ubuntu CI에서 재검증하고 PC4 PR #2의 49 unit, 4 integration, 6 E2E, coverage와 artifact upload green을 확인해 병합했다."},
+    {"role":"user","content":"발표 없는 문서형 초안을 실제 발표용 본편과 appendix, 한국어 대본, 제품 UI 기반 PPT로 바꾸고 PC2 PR을 빨리 받으라고 요청했다."},
+    {"role":"assistant","content":"8장 본편과 4장 appendix의 evidence-first 구조를 설계하고 실제 repository, PR, CI, screenshot, video만 근거로 사용했다."},
+    {"role":"user","content":"구현을 최우선으로 하고 PC2 최신 내용을 반영해 전체 프로그램이 실제로 굴러가도록 마무리하며 모든 산출물을 GitHub에 푸시하라고 요청했다."},
+    {"role":"assistant","content":"PC2 PR의 green SHA b31444c를 선별 통합했다. 이후 demo CTA를 제거한 0195633은 E2E failure였으므로 제외했다. GitHub Pages 정적 배포에서 persona image 경로가 깨지는 숨은 위험을 찾아 basePath-aware asset 경로와 unoptimized image export, PR Pages build gate를 추가했다."},
+    {"role":"assistant","content":"최종 PPTX, 한국어 발표 대본, 35.32초 MP4, desktop/mobile screenshot, regression seed, source ledger, deck source, 제출 README와 이 JSON 로그를 저장소 제출 번들로 구성했다."}
+  ],
+  "final_truth_boundaries": [
+    "AI 페르소나는 실제 사용자 조사를 대체하지 않는다.",
+    "현재 mock screen과 patch는 결정론적 fixture이며 live OpenAI 호출이 아니다.",
+    "사람 승인 단계는 데모 진행을 승인하지만 실제 저장소 코드를 런타임에 변경하지 않는다.",
+    "실제 preview URL sandbox runner와 live patch replay는 다음 단계다.",
+    "검증되지 않은 기능, 배포 URL, 효과는 완료로 표시하지 않는다."
+  ]
+}
