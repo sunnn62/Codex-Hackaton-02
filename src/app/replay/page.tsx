@@ -1,3 +1,5 @@
-import { ReplayCourt } from '@/components/replay-court'
-import { createDemoFlightRecord } from '@/lib/replay/demo-flight'
-export default function ReplayPage() { return <ReplayCourt record={createDemoFlightRecord()} /> }
+import { ProjectPicker } from '@/components/projects/project-picker'
+
+export default function ReplayPage() {
+  return <ProjectPicker />
+}
