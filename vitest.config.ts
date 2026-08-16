@@ -9,7 +9,7 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    include: ['tests/unit/**/*.test.ts'],
+    include: ['tests/unit/**/*.test.{ts,tsx}'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json-summary'],
@@ -18,8 +18,8 @@ export default defineConfig({
         lines: 80,
         functions: 80,
         statements: 80,
-        branches: 70
-      }
-    }
+        branches: 70,
+      },
+    },
   },
 })
