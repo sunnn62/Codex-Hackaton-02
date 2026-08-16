@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 
 import { RadialCarousel, type GalleryItem } from '@/components/ui/radial-carousel'
+import { ShareSheet } from '@/components/ui/share-sheet'
 
 import styles from './project-picker.module.css'
 
@@ -23,6 +24,12 @@ const PROJECTS: readonly Project[] = [
   { id: 'orbit-notes', title: 'Orbit Notes', detail: 'Preview 연결 대기', ready: false, url: cardArtwork('Orbit Notes', 'Preview pending', '#C9B8EF') },
   { id: 'form-kit', title: 'FormKit', detail: 'Preview 연결 대기', ready: false, url: cardArtwork('FormKit', 'Preview pending', '#E8C89A') },
   { id: 'daily-drop', title: 'DailyDrop', detail: 'Preview 연결 대기', ready: false, url: cardArtwork('DailyDrop', 'Preview pending', '#B9D9C7') },
+]
+
+const ADD_SOURCES = [
+  { id: 'folder', name: '폴더에서 추가', avatar: cardArtwork('Folder', 'Choose a local folder', '#9CB8FA') },
+  { id: 'github', name: 'GitHub 연결', avatar: cardArtwork('GitHub', 'Coming soon', '#C9B8EF') },
+  { id: 'preview', name: 'Preview URL 추가', avatar: cardArtwork('Preview', 'Coming soon', '#E8C89A') },
 ]
 
 export function ProjectPicker() {
@@ -64,6 +71,14 @@ export function ProjectPicker() {
     event.target.value = ''
   }
 
+  function chooseAddSource(source: { readonly id: string; readonly name: string }) {
+    if (source.id === 'folder') {
+      folderInput.current?.click()
+      return
+    }
+    setNotice(`${source.name} 방식은 다음 데모 단계에서 연결됩니다.`)
+  }
+
   return <main className={styles.page}>
     <header className={styles.topbar}>
       <Link className={styles.brand} href="/">PersonaFlight</Link>
@@ -75,7 +90,7 @@ export function ProjectPicker() {
         <h1 id="project-picker-title">어떤 프로젝트를<br />검증할까요?</h1>
         <p>프로젝트를 선택하면, 준비된 미션과 3가지 조건으로 Replay Court를 시작합니다.</p>
         <input className={styles.folderInput} multiple onChange={addProject} ref={folderInput} type="file" />
-        <button className={styles.addProject} onClick={() => folderInput.current?.click()} type="button"><span aria-hidden="true">＋</span> 프로젝트 추가하기</button>
+        <div className={styles.addProject}><ShareSheet onShareComplete={chooseAddSource} triggerLabel="프로젝트 추가하기" users={ADD_SOURCES} /></div>
       </div>
       <div className={styles.orbit}>
         <RadialCarousel centerSize={380} items={[...projects]} onItemSelect={selectProject} radius={250} thumbnailSize={104} />
