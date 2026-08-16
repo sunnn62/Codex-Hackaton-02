@@ -15,8 +15,8 @@
 - [x] regression seed 다운로드
 - [x] API key와 계정 없는 demo mode
 - [x] synthetic evidence disclaimer
-- [ ] PC4 Integration test
-- [ ] PC4 Playwright critical-flow E2E
+- [x] Flight Record integration test
+- [x] Playwright desktop keyboard + mobile touch critical-flow E2E
 
 ## 품질
 
@@ -28,7 +28,7 @@
 - [x] 390×844 horizontal overflow 없음
 - [x] browser warning/error 0
 - [x] 실제 secret 없음
-- [ ] 최종 통합 후 위 모든 명령 재실행
+- [x] 원격 이력 통합 후 위 모든 명령 재실행
 - [ ] 배포 URL을 다른 PC에서 검증
 
 ## GitHub와 Orchestration
@@ -38,9 +38,9 @@
 - [x] PC2·PC3·PC4 역할·branch·모델·prompt 문서
 - [x] PR template
 - [x] CI workflow
-- [ ] GitHub 인증 복구
-- [ ] `origin/integration` baseline push
-- [ ] baseline full SHA 팀 공유
+- [x] GitHub 인증 복구
+- [x] `origin/integration` baseline push
+- [x] baseline full SHA 팀 공유: `b24efb6ef2177c43e426a8346a0cdfa30ab59dff`
 - [ ] PC2 Draft PR
 - [ ] PC3 Draft PR
 - [ ] PC4 Draft PR
@@ -56,7 +56,7 @@
 - [x] `docs/DEMO_SCRIPT.md`
 - [x] `docs/SUBMISSION_CHECKLIST.md`
 - [ ] Build Log의 TODO를 실제 PR/SHA/CI URL로 교체
-- [ ] 최종 desktop/mobile screenshot
+- [x] 최종 desktop/mobile screenshot (`docs/assets/`)
 - [ ] 3분 demo video 촬영
 - [ ] 영상 업로드
 - [ ] 다른 PC에서 영상 재생 검증
@@ -66,8 +66,8 @@
 - GitHub: https://github.com/sunnn62/Codex-Hackaton-02
 - Service: **TODO**
 - Demo video: **TODO**
-- Final commit SHA: **TODO**
-- CI run: **TODO**
+- Green integration baseline: [`8f286efd8727c3404f576267b3ea05d9dfac8115`](https://github.com/sunnn62/Codex-Hackaton-02/commit/8f286efd8727c3404f576267b3ea05d9dfac8115)
+- CI run: [PersonaFlight CI #31930156060](https://github.com/sunnn62/Codex-Hackaton-02/actions/runs/31930156060)
 
 ## 제출 5분 전
 

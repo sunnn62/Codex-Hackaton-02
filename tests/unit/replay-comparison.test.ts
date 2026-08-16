@@ -200,6 +200,45 @@ describe('createReplayComparison', () => {
     ).toBe('partial')
   })
 
+  it('returns partial when infrastructure failure occurs in the baseline', () => {
+    const record = createDemoFlightRecord()
+    const before = record.before.map((run, index) => ({
+      ...run,
+      verdict:
+        index === 0
+          ? ('infrastructure-failure' as const)
+          : ('blocked' as const),
+    }))
+
+    expect(
+      createReplayComparison(record.replayCase.mission.id, before, record.after)
+        .verdict,
+    ).toBe('partial')
+  })
+
+  it('validates after-run cardinality and uniqueness independently', () => {
+    const record = createDemoFlightRecord()
+    const duplicateAfter = record.after.map((run) => ({
+      ...run,
+      conditionId: record.after[0].conditionId,
+    }))
+
+    expect(() =>
+      createReplayComparison(
+        record.replayCase.mission.id,
+        record.before,
+        record.after.slice(0, 2),
+      ),
+    ).toThrow(/after.*three distinct condition IDs/i)
+    expect(() =>
+      createReplayComparison(
+        record.replayCase.mission.id,
+        record.before,
+        duplicateAfter,
+      ),
+    ).toThrow(/after.*three distinct condition IDs/i)
+  })
+
   it('sorts multiple unresolved condition IDs deterministically', () => {
     const record = createDemoFlightRecord()
     const after = [

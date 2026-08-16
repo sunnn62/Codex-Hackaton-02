@@ -1,6 +1,7 @@
-import type {
-  ConditionRun,
-  ReplayComparison,
+import {
+  deriveReplayVerdict,
+  type ConditionRun,
+  type ReplayComparison,
 } from '@/lib/contracts/replay'
 
 function sortedConditionIds(runs: readonly ConditionRun[]): string[] {
@@ -40,24 +41,6 @@ function hasSameConditionSet(
   )
 }
 
-function replayVerdict(
-  beforePassed: number,
-  afterPassed: number,
-  hasUnresolvedConditions: boolean,
-  hasInfrastructureFailure: boolean,
-): ReplayComparison['verdict'] {
-  if (hasInfrastructureFailure) {
-    return 'partial'
-  }
-  if (afterPassed < beforePassed) {
-    return 'regressed'
-  }
-  if (afterPassed === beforePassed) {
-    return 'no-change'
-  }
-  return hasUnresolvedConditions ? 'partial' : 'improved'
-}
-
 export function createReplayComparison(
   missionId: string,
   before: readonly ConditionRun[],
@@ -82,7 +65,7 @@ export function createReplayComparison(
     .filter((run) => run.verdict !== 'passed')
     .map((run) => run.conditionId)
     .sort()
-  const hasInfrastructureFailure = after.some(
+  const hasInfrastructureFailure = [...before, ...after].some(
     (run) => run.verdict === 'infrastructure-failure',
   )
 
@@ -90,7 +73,7 @@ export function createReplayComparison(
     missionId,
     beforePassed,
     afterPassed,
-    verdict: replayVerdict(
+    verdict: deriveReplayVerdict(
       beforePassed,
       afterPassed,
       unresolvedConditionIds.length > 0,

@@ -196,6 +196,48 @@ describe('parseFlightRecord', () => {
     )
   })
 
+  it('accepts partial when an after infrastructure failure prevents comparison', () => {
+    const after = validFlightRecord.after.map((run, index) => ({
+      ...run,
+      verdict:
+        index === 0
+          ? ('infrastructure-failure' as const)
+          : ('blocked' as const),
+    }))
+    const record = parseFlightRecord({
+      ...validFlightRecord,
+      after,
+      comparison: {
+        ...validFlightRecord.comparison,
+        afterPassed: 0,
+        verdict: 'partial' as const,
+        unresolvedConditionIds: after.map((run) => run.conditionId),
+      },
+    })
+
+    expect(record.comparison.verdict).toBe('partial')
+  })
+
+  it('accepts partial when baseline infrastructure prevents comparison', () => {
+    const before = validFlightRecord.before.map((run, index) => ({
+      ...run,
+      verdict:
+        index === 0
+          ? ('infrastructure-failure' as const)
+          : ('blocked' as const),
+    }))
+    const record = parseFlightRecord({
+      ...validFlightRecord,
+      before,
+      comparison: {
+        ...validFlightRecord.comparison,
+        verdict: 'partial' as const,
+      },
+    })
+
+    expect(record.comparison.verdict).toBe('partial')
+  })
+
   it('rejects comparison values that contradict the replay runs', () => {
     const invalidRecord = {
       ...validFlightRecord,
