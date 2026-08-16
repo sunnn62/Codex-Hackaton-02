@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "sourceFlightRecordId": "flight-record-focus-list",
+  "mission": {
+    "id": "create-today-task",
+    "title": "할 일을 만들고 오늘 목록에 추가한다",
+    "startState": "빈 Today 목록과 닫힌 작성 폼",
+    "successCriterion": "새 할 일 “발표 리허설”이 Today 목록에 표시된다",
+    "failureCriterion": "저장 동작이나 완료 여부를 확인할 수 없다"
+  },
+  "conditions": [
+    {
+      "id": "touch-small-viewport",
+      "label": "Touch-only · Small viewport",
+      "constraints": {
+        "viewport": "small-mobile",
+        "inputMode": "touch",
+        "patience": "standard",
+        "inference": "standard"
+      }
+    },
+    {
+      "id": "low-patience-delayed-feedback",
+      "label": "Low patience · Delayed feedback",
+      "constraints": {
+        "viewport": "large-mobile",
+        "inputMode": "touch",
+        "patience": "low",
+        "inference": "standard"
+      }
+    },
+    {
+      "id": "reduced-inference-ambiguous-copy",
+      "label": "Reduced inference · Ambiguous copy",
+      "constraints": {
+        "viewport": "desktop",
+        "inputMode": "keyboard",
+        "patience": "standard",
+        "inference": "reduced"
+      }
+    }
+  ],
+  "expectedPassedConditionIds": [
+    "touch-small-viewport",
+    "low-patience-delayed-feedback",
+    "reduced-inference-ambiguous-copy"
+  ],
+  "unresolvedConditionIds": []
+}

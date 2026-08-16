@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 import styles from './feedback-session.module.css'
+import { publicAssetPath } from '@/lib/public-asset-path'
 
 interface SessionPersona {
   readonly id: string
@@ -16,14 +17,14 @@ interface SessionPersona {
 }
 
 const PERSONAS: readonly SessionPersona[] = [
-  { id: 'kim-seoyeon', name: '김서연', role: '대학생 · ISFJ', avatar: '/personas/kim-seoyeon.png', quote: '저장한 뒤에 결과가 바로 보이면 다음 행동을 결정하기 편해요.' },
-  { id: 'park-jiwoo', name: '박지우', role: '마케팅 인턴 · ENFP', avatar: '/personas/park-jiwoo.png', quote: '새 기능을 눌렀을 때 어떤 변화가 생겼는지 빠르게 알고 싶어요.' },
-  { id: 'lee-sumin', name: '이수민', role: '회계사 · ISTJ', avatar: '/personas/lee-sumin.png', quote: '한 번의 행동이 저장인지 닫기인지 명확해야 다시 확인하지 않아요.' },
-  { id: 'choi-minjun', name: '최민준', role: '컴퓨터공학과 학생 · INTP', avatar: '/personas/choi-minjun-v2.png', quote: '상태가 바뀌는 순간을 확인할 수 있으면 오류를 빠르게 구분할 수 있어요.' },
-  { id: 'jeong-hyeonwoo', name: '정현우', role: '스타트업 PM · ESTP', avatar: '/personas/jeong-hyeonwoo.png', quote: '다음 단계가 한눈에 보여야 흐름이 끊기지 않아요.' },
-  { id: 'kang-doyoon', name: '강도윤', role: '기획팀 팀장 · ENTJ', avatar: '/personas/kang-doyoon.png', quote: '핵심 결과가 분명하면 검토 시간을 줄일 수 있어요.' },
-  { id: 'oh-junhyeok', name: '오준혁', role: '콘텐츠 크리에이터 · ESFP', avatar: '/personas/oh-junhyeok.png', quote: '주요 행동과 완료 상태가 시각적으로 구분되면 좋겠어요.' },
-  { id: 'han-jihoon', name: '한지훈', role: '중소기업 운영자 · ISTP', avatar: '/personas/han-jihoon.png', quote: '필요한 기능을 찾은 뒤 결과까지 짧게 확인할 수 있어야 해요.' },
+  { id: 'kim-seoyeon', name: '김서연', role: '대학생 · ISFJ', avatar: publicAssetPath('/personas/kim-seoyeon.png'), quote: '저장한 뒤에 결과가 바로 보이면 다음 행동을 결정하기 편해요.' },
+  { id: 'park-jiwoo', name: '박지우', role: '마케팅 인턴 · ENFP', avatar: publicAssetPath('/personas/park-jiwoo.png'), quote: '새 기능을 눌렀을 때 어떤 변화가 생겼는지 빠르게 알고 싶어요.' },
+  { id: 'lee-sumin', name: '이수민', role: '회계사 · ISTJ', avatar: publicAssetPath('/personas/lee-sumin.png'), quote: '한 번의 행동이 저장인지 닫기인지 명확해야 다시 확인하지 않아요.' },
+  { id: 'choi-minjun', name: '최민준', role: '컴퓨터공학과 학생 · INTP', avatar: publicAssetPath('/personas/choi-minjun-v2.png'), quote: '상태가 바뀌는 순간을 확인할 수 있으면 오류를 빠르게 구분할 수 있어요.' },
+  { id: 'jeong-hyeonwoo', name: '정현우', role: '스타트업 PM · ESTP', avatar: publicAssetPath('/personas/jeong-hyeonwoo.png'), quote: '다음 단계가 한눈에 보여야 흐름이 끊기지 않아요.' },
+  { id: 'kang-doyoon', name: '강도윤', role: '기획팀 팀장 · ENTJ', avatar: publicAssetPath('/personas/kang-doyoon.png'), quote: '핵심 결과가 분명하면 검토 시간을 줄일 수 있어요.' },
+  { id: 'oh-junhyeok', name: '오준혁', role: '콘텐츠 크리에이터 · ESFP', avatar: publicAssetPath('/personas/oh-junhyeok.png'), quote: '주요 행동과 완료 상태가 시각적으로 구분되면 좋겠어요.' },
+  { id: 'han-jihoon', name: '한지훈', role: '중소기업 운영자 · ISTP', avatar: publicAssetPath('/personas/han-jihoon.png'), quote: '필요한 기능을 찾은 뒤 결과까지 짧게 확인할 수 있어야 해요.' },
 ]
 
 const CONDITIONS = [
