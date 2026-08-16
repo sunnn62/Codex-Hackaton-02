@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { FiShare } from "react-icons/fi";
 import { cn } from "@/lib/utils";
@@ -8,13 +8,14 @@ import { cn } from "@/lib/utils";
 interface User {
   id: string;
   name: string;
-  avatar: string;
+  icon: ReactNode;
 }
 
 interface ShareSheetProps {
   users: User[];
   onShareComplete?: (user: User) => void;
   triggerLabel?: string;
+  renderTrigger?: (trigger: { readonly label: string; readonly onClick: () => void }) => ReactNode;
 }
 
 const springTransition = {
@@ -24,7 +25,7 @@ const springTransition = {
   mass: 1,
 } as const;
 
-export const ShareSheet = ({ users, onShareComplete, triggerLabel = "공유하기" }: ShareSheetProps) => {
+export const ShareSheet = ({ users, onShareComplete, triggerLabel = "공유하기", renderTrigger }: ShareSheetProps) => {
   const [status, setStatus] = useState<"idle" | "open" | "sending" | "success">(
     "idle"
   );
@@ -49,10 +50,14 @@ export const ShareSheet = ({ users, onShareComplete, triggerLabel = "공유하�
     }, 1800);
   };
 
+  const openSheet = () => {
+    if (status === "idle") setStatus("open");
+  };
+
   return (
     <div className="relative flex items-center justify-start">
-      <motion.button
-        onClick={() => status === "idle" && setStatus("open")}
+      {renderTrigger ? renderTrigger({ label: triggerLabel, onClick: openSheet }) : <motion.button
+        onClick={openSheet}
         aria-label={triggerLabel}
         className="relative flex h-12 items-center justify-center gap-2 overflow-hidden rounded-full bg-[#0a152d] px-5 text-sm font-semibold text-neutral-50 shadow-sm"
         initial={{ opacity: 0, scale: 0.8 }}
@@ -110,14 +115,15 @@ export const ShareSheet = ({ users, onShareComplete, triggerLabel = "공유하�
                   />
                 </svg>
 
-                <motion.img
-                  key="sending-avatar"
+                <motion.div
+                  key="sending-icon"
                   layoutId="avatar-morph"
-                  src={selectedUser?.avatar}
-                  className="absolute inset-0 m-auto size-10 rounded-full object-cover"
+                  className="absolute inset-0 m-auto flex size-10 items-center justify-center rounded-full bg-white/15 text-xl"
                   exit={{ opacity: 0, scale: 0.6 }}
                   transition={{ duration: 0.3 }}
-                />
+                >
+                  {selectedUser?.icon}
+                </motion.div>
 
                 <AnimatePresence mode="wait">
                   {status === "success" && (
@@ -152,7 +158,7 @@ export const ShareSheet = ({ users, onShareComplete, triggerLabel = "공유하�
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.button>
+      </motion.button>}
       <AnimatePresence mode="popLayout" initial={false}>
         {status === "open" && (
           <motion.div
@@ -194,16 +200,13 @@ export const ShareSheet = ({ users, onShareComplete, triggerLabel = "공유하�
                     }}
                     transition={springTransition}
                   >
-                    <motion.img
+                    <motion.div
                       layout
-                      layoutId={
-                        selectedUser?.id === user.id
-                          ? "avatar-morph"
-                          : `img-${user.id}`
-                      }
-                      src={user.avatar}
-                      className="h-full w-full object-cover"
-                    />
+                      layoutId={selectedUser?.id === user.id ? "avatar-morph" : `icon-${user.id}`}
+                      className="flex h-full w-full items-center justify-center bg-slate-100 text-[16px] text-[#0a1b33]"
+                    >
+                      {user.icon}
+                    </motion.div>
                   </motion.div>
 
                   <motion.span

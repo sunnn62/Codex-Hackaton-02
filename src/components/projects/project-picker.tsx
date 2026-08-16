@@ -3,8 +3,10 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
+import { FiFolder, FiGithub, FiLink } from 'react-icons/fi'
 
 import { RadialCarousel, type GalleryItem } from '@/components/ui/radial-carousel'
+import ButtonGroup1 from '@/components/ui/button-group-1'
 import { ShareSheet } from '@/components/ui/share-sheet'
 
 import styles from './project-picker.module.css'
@@ -27,18 +29,18 @@ const PROJECTS: readonly Project[] = [
 ]
 
 const ADD_SOURCES = [
-  { id: 'folder', name: '폴더에서 추가', avatar: cardArtwork('Folder', 'Choose a local folder', '#9CB8FA') },
-  { id: 'github', name: 'GitHub 연결', avatar: cardArtwork('GitHub', 'Coming soon', '#C9B8EF') },
-  { id: 'preview', name: 'Preview URL 추가', avatar: cardArtwork('Preview', 'Coming soon', '#E8C89A') },
+  { id: 'folder', name: '폴더에서 추가', icon: <FiFolder aria-hidden="true" /> },
+  { id: 'github', name: 'GitHub 연결', icon: <FiGithub aria-hidden="true" /> },
+  { id: 'preview', name: 'Preview URL 추가', icon: <FiLink aria-hidden="true" /> },
 ]
 
 export function ProjectPicker() {
   const router = useRouter()
   const folderInput = useRef<HTMLInputElement>(null)
   const [projects, setProjects] = useState<readonly Project[]>(PROJECTS)
-  const [selectedProjectId, setSelectedProjectId] = useState<string | number>(PROJECTS[0].id)
+  const [selectedProjectId, setSelectedProjectId] = useState<string | number | null>(null)
   const [notice, setNotice] = useState('원형으로 펼쳐진 프로젝트를 클릭해 Replay Court를 시작하세요.')
-  const selectedProject = projects.find((project) => project.id === selectedProjectId) ?? projects[0]
+  const selectedProject = projects.find((project) => project.id === selectedProjectId)
 
   useEffect(() => {
     folderInput.current?.setAttribute('webkitdirectory', '')
@@ -102,19 +104,23 @@ export function ProjectPicker() {
         <p>프로젝트를 고른 뒤, 아래 선택 버튼으로 페르소나 테스트를 시작합니다.</p>
         <input className={styles.folderInput} multiple onChange={addProject} ref={folderInput} type="file" />
         <div className={styles.actions}>
-          <div className={styles.addProject}><ShareSheet onShareComplete={chooseAddSource} triggerLabel="프로젝트 추가하기" users={ADD_SOURCES} /></div>
-          <button className={styles.selectProject} disabled={!selectedProject?.ready} onClick={continueWithProject} type="button">
-            {selectedProject?.ready ? `${selectedProject.title} 프로젝트 선택` : 'Preview 연결 대기'} <span aria-hidden="true">→</span>
-          </button>
+          <div className={styles.addProject}>
+            <ShareSheet
+              onShareComplete={chooseAddSource}
+              triggerLabel="프로젝트 추가하기"
+              users={ADD_SOURCES}
+              renderTrigger={({ label, onClick }) => <ButtonGroup1 actionLabel={label} countLabel="3가지 방식" onClick={onClick} />}
+            />
+          </div>
+          {selectedProject && <button className={styles.selectProject} disabled={!selectedProject.ready} onClick={continueWithProject} type="button">
+            {selectedProject.ready ? `${selectedProject.title} 프로젝트 선택` : 'Preview 연결 대기'} <span aria-hidden="true">→</span>
+          </button>}
         </div>
       </div>
       <div className={styles.orbit}>
-        <RadialCarousel centerSize={380} items={[...projects]} onItemSelect={selectProject} radius={250} thumbnailSize={104} />
-      </div>
-      <div className={styles.footer}>
-        <div><span className={styles.statusDot} aria-hidden="true" /> <strong>FocusList</strong><span> · 1개 프로젝트 검증 준비 완료</span></div>
-        <p aria-live="polite">{notice}</p>
+        <RadialCarousel centerSize={380} items={[...projects]} onItemSelect={selectProject} radius={150} thumbnailSize={170} />
       </div>
     </section>
+    <p className={styles.screenReaderNotice} aria-live="polite">{notice}</p>
   </main>
 }
