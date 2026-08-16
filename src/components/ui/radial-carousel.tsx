@@ -6,6 +6,8 @@ import {
   AnimatePresence,
   type Variants,
   useMotionValue,
+  useAnimationFrame,
+  useReducedMotion,
   useSpring,
   useTransform,
   type MotionValue,
@@ -16,6 +18,8 @@ export interface GalleryItem {
   url: string;
   title?: string;
 }
+
+const AUTO_ROTATION_DEGREES_PER_MS = 0.006;
 
 export interface RadialCarouselProps {
   items: GalleryItem[];
@@ -75,10 +79,17 @@ export const RadialCarousel: React.FC<RadialCarouselProps> = ({
   }, [radius, thumbnailSize, centerSize]);
 
   const rotation = useMotionValue(0);
+  const prefersReducedMotion = useReducedMotion();
 
   const smoothRotation = useSpring(rotation, {
     bounce: 0.15,
     duration: 0.1,
+  });
+
+  useAnimationFrame((_, delta) => {
+    if (isExpanded && !isPanning && !prefersReducedMotion) {
+      rotation.set(rotation.get() + delta * AUTO_ROTATION_DEGREES_PER_MS);
+    }
   });
 
   const toggleExpand = useCallback(() => {
