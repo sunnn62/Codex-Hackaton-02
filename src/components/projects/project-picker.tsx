@@ -141,7 +141,7 @@ export function ProjectPicker() {
             {selectedProject.ready ? `${selectedProject.title} 프로젝트 선택` : 'Preview 연결 대기'} <span aria-hidden="true">→</span>
           </button>}
         </div>
-        {savedFeedback && <aside className={styles.feedbackMemo} aria-label="FocusList에 저장된 피드백 메모">
+        {savedFeedback && selectedProject?.id === 'focus-list' && <aside className={styles.feedbackMemo} aria-label="FocusList에 저장된 피드백 메모">
           <span>FOCUSLIST / FEEDBACK NOTE</span><strong>{savedFeedback.persona}의 피드백</strong><p>{savedFeedback.summary}</p>
         </aside>}
       </div>
