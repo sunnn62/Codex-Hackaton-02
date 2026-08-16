@@ -109,7 +109,7 @@ export function ProjectPicker() {
               onShareComplete={chooseAddSource}
               triggerLabel="프로젝트 추가하기"
               users={ADD_SOURCES}
-              renderTrigger={({ label, onClick }) => <ButtonGroup1 actionLabel={label} countLabel="3가지 방식" onClick={onClick} />}
+              renderTrigger={({ label, onClick }) => <ButtonGroup1 actionLabel={label} onClick={onClick} />}
             />
           </div>
           {selectedProject && <button className={styles.selectProject} disabled={!selectedProject.ready} onClick={continueWithProject} type="button">
@@ -118,7 +118,7 @@ export function ProjectPicker() {
         </div>
       </div>
       <div className={styles.orbit}>
-        <RadialCarousel centerSize={380} items={[...projects]} onItemSelect={selectProject} radius={150} thumbnailSize={170} />
+        <RadialCarousel centerSize={380} items={[...projects]} onItemSelect={selectProject} radius={150} thumbnailSize={145} />
       </div>
     </section>
     <p className={styles.screenReaderNotice} aria-live="polite">{notice}</p>
