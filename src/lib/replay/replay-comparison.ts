@@ -7,7 +7,30 @@ function sortedConditionIds(runs: readonly ConditionRun[]): string[] {
   return runs.map((run) => run.conditionId).sort()
 }
 
-function hasIdenticalConditions(
+function assertRunVersions(
+  runs: readonly ConditionRun[],
+  expectedVersion: ConditionRun['version'],
+  label: 'Before' | 'After',
+): void {
+  if (runs.some((run) => run.version !== expectedVersion)) {
+    throw new Error(`${label} runs must use version "${expectedVersion}"`)
+  }
+}
+
+function assertThreeDistinctConditionIds(
+  runs: readonly ConditionRun[],
+  label: 'Before' | 'After',
+): Set<string> {
+  const conditionIds = new Set(runs.map((run) => run.conditionId))
+
+  if (runs.length !== 3 || conditionIds.size !== 3) {
+    throw new Error(`${label} runs must contain exactly three distinct condition IDs`)
+  }
+
+  return conditionIds
+}
+
+function hasSameConditionSet(
   before: readonly ConditionRun[],
   after: readonly ConditionRun[],
 ): boolean {
@@ -21,7 +44,11 @@ function replayVerdict(
   beforePassed: number,
   afterPassed: number,
   hasUnresolvedConditions: boolean,
+  hasInfrastructureFailure: boolean,
 ): ReplayComparison['verdict'] {
+  if (hasInfrastructureFailure) {
+    return 'partial'
+  }
   if (afterPassed < beforePassed) {
     return 'regressed'
   }
@@ -36,12 +63,13 @@ export function createReplayComparison(
   before: readonly ConditionRun[],
   after: readonly ConditionRun[],
 ): ReplayComparison {
-  if (
-    before.length !== 3 ||
-    after.length !== 3 ||
-    !hasIdenticalConditions(before, after)
-  ) {
-    throw new Error('Before and after runs must use identical conditions')
+  assertRunVersions(before, 'before', 'Before')
+  assertRunVersions(after, 'after', 'After')
+  assertThreeDistinctConditionIds(before, 'Before')
+  assertThreeDistinctConditionIds(after, 'After')
+
+  if (!hasSameConditionSet(before, after)) {
+    throw new Error('Before and after runs must use the same condition set')
   }
 
   if ([...before, ...after].some((run) => run.missionId !== missionId)) {
@@ -54,6 +82,9 @@ export function createReplayComparison(
     .filter((run) => run.verdict !== 'passed')
     .map((run) => run.conditionId)
     .sort()
+  const hasInfrastructureFailure = after.some(
+    (run) => run.verdict === 'infrastructure-failure',
+  )
 
   return Object.freeze({
     missionId,
@@ -63,6 +94,7 @@ export function createReplayComparison(
       beforePassed,
       afterPassed,
       unresolvedConditionIds.length > 0,
+      hasInfrastructureFailure,
     ),
     unresolvedConditionIds: Object.freeze(unresolvedConditionIds),
   })

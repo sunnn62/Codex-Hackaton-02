@@ -14,6 +14,13 @@ export function validateFindingEvidence(
   finding: Finding,
   beforeRuns: readonly ConditionRun[],
 ): EvidenceValidation {
+  if (finding.evidenceIds.length === 0) {
+    return Object.freeze({
+      accepted: false as const,
+      unknownEvidenceIds: Object.freeze([]) as readonly [],
+    })
+  }
+
   const knownEvidenceIds = new Set(
     beforeRuns.flatMap((run) => run.evidence.map((evidence) => evidence.id)),
   )
@@ -43,6 +50,10 @@ export function assertFindingEvidence(
   const validation = validateFindingEvidence(finding, beforeRuns)
 
   if (!validation.accepted) {
+    if (finding.evidenceIds.length === 0) {
+      throw new Error('Finding must cite at least one evidence ID')
+    }
+
     throw new Error(
       `Finding cites unknown evidence: ${validation.unknownEvidenceIds.join(', ')}`,
     )

@@ -32,6 +32,35 @@ describe('evidence gate', () => {
     )
   })
 
+  it('rejects a finding without evidence IDs', () => {
+    const record = createDemoFlightRecord()
+    const finding = {
+      ...record.finding,
+      evidenceIds: [],
+    }
+
+    expect(validateFindingEvidence(finding, record.before)).toEqual({
+      accepted: false,
+      unknownEvidenceIds: [],
+    })
+    expect(() => assertFindingEvidence(finding, record.before)).toThrow(
+      /at least one evidence/i,
+    )
+  })
+
+  it('deduplicates multiple unknown evidence IDs', () => {
+    const record = createDemoFlightRecord()
+    const finding = {
+      ...record.finding,
+      evidenceIds: ['missing-first', 'missing-second', 'missing-first'],
+    }
+
+    expect(validateFindingEvidence(finding, record.before)).toEqual({
+      accepted: false,
+      unknownEvidenceIds: ['missing-first', 'missing-second'],
+    })
+  })
+
   it('does not mutate the supplied evidence or finding', () => {
     const record = createDemoFlightRecord()
     const evidenceIds = [...record.finding.evidenceIds]
