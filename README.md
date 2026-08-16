@@ -69,15 +69,6 @@ npm.cmd run build
 npm.cmd run test:integration
 npm.cmd run test:e2e
 ```
-
-## 검증 화면
-
-CI의 E2E 테스트가 동일 흐름을 실행한 뒤 데스크톱과 모바일 touch 화면을 증거로 첨부합니다.
-
-![PersonaFlight desktop Flight Record](docs/assets/flight-record-desktop.png)
-
-![PersonaFlight mobile Flight Record](docs/assets/flight-record-mobile.png)
-
 ## 구조
 
 ```text
