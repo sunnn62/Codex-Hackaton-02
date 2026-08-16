@@ -37,7 +37,7 @@ const PERSONAS: readonly Persona[] = [
   {
     id: 'choi-minjun', name: '최민준', age: 22, mbti: 'INTP', role: '컴퓨터공학과 학생',
     trait: '기능을 깊게 파고드는 성향, 오류 발견에 민감', interests: '개발, AI, 오픈소스',
-    avatar: '/personas/choi-minjun.png', note: '기능의 상태 변화와 오류 피드백이 충분한지 봅니다.',
+    avatar: '/personas/choi-minjun-v2.png', note: '기능의 상태 변화와 오류 피드백이 충분한지 봅니다.',
   },
   {
     id: 'jeong-hyeonwoo', name: '정현우', age: 28, mbti: 'ESTP', role: '스타트업 PM',
